@@ -16,7 +16,10 @@ Algorithm::Algorithm(Params params){
     // memset(E_s, 0, sizeof(E_s));
 
     for (int i = 0; i< m*m; i++) {
-        this->N[i] = rand() / double(RAND_MAX);
+        if ((rand() / double(RAND_MAX)) < 0.5) 
+            this->N[i] = rand() / double(RAND_MAX);
+        else
+            this->N[i] = 0;
     }
 
     if (params.profile.empty()) {
@@ -402,6 +405,57 @@ vector<vector<int>> Algorithm::centralizedAlgorithm() {
         result1[ich] = result[ich][sample_color];
     }
     return result1;
+}
+
+double Algorithm::det_f(int ich, const vector<vector<int>> Q, const int poicy, 
+                        const vector<vector<int>> neighbors) {
+    
+}
+
+vector<vector<int>> Algorithm::distributedAlgorithm() {
+    vector<vector<int>> neighbor(n);
+    for (int ich1 = 0; ich1 < n - 1; ich1++) {
+        for (int ich2 = ich1+1; ich2 < n; ich2++) {
+            bool is_neighbor = false;
+            for (int ise = 0; ise < m; ise++) {
+                if (!cover[ich1*m+ise])
+                    continue;
+                if (cover[ich2*m+ise]) {
+                    is_neighbor = true;
+                    break;
+                } else {
+                    for (int ise2 = 0; ise2 < m; ise2++) {
+                        if (cover[ich2*m+ise2] && N[ise*m+ise2] > 0 && N[ise2*m+ise] > 0) {
+                            is_neighbor = true;
+                        }
+                    }
+                }
+            }
+            if (is_neighbor) {
+                neighbor[ich1].push_back(ich2);
+                neighbor[ich2].push_back(ich1);
+            }
+        }
+    }
+    //已经得到每个charger的邻居
+    auto all_domain_set = getAllDominantCoverageSet();  //得到每个charger的支配集
+    vector<int> poicties(n);   //记录每个charger所选择的策略
+    vector<vector<int>> Q(n); //记录每个charger，每个颜色的策略，下标自动对应颜色
+    vector<int> isUpdate(n);  //记录每个charger发送消息的类型， 0-没发送，1-null， 2-Update 
+    for (int i = 0; i<n; i++) {
+        for (int j =0; j<m; j++) {
+            Q[i].push_back(-1);
+        }
+    }
+    vector<int> currColor(n);   //记录每个charger当前所处的颜色阶段
+    for (int i=0; i<n; i++) {
+        currColor.push_back(0);
+    }
+    vector<double> currDetf(n);   //记录当前每个charger的DETf的值
+
+    while(true) {
+
+    }
 }
 
 Algorithm::~Algorithm() {

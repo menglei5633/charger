@@ -60,7 +60,9 @@ public:
     vector<vector<int>> getDominantCoverageSet(int ch);  //计算charger ch 的dominant coverage set
     vector<vector<vector<int>>> getAllDominantCoverageSet();  //计算所有charger的dominant coverage set
 
-    vector<vector<int>> centralizedAlgorithm();  //中心算法
+    vector<vector<int>> centralizedAlgorithm();  //集中式算法
+    vector<vector<int>> distributedAlgorithm();  //分布式算法
+
 
     
     
@@ -78,6 +80,8 @@ private:
 
     vector<double> greedyEnergySharingStrategy(vector<double> charger_value);  //电量分享贪心算法
     double U(vector<double> sensor_charger_value);  //计算电量效用
+
+    double det_f(int ich, vector<vector<int>> Q, int poicy, vector<vector<int>> neighbor);   //分布式算法中，计算charger ich 的local f值
 
     double mindo_(double a, double b) {
         return a<b?a:b;
